@@ -13,12 +13,14 @@ import {
 
 import "@xyflow/react/dist/style.css";
 
-const flowKey = "example-flow";
-
-const getNodeId = () => `randomnode_${+new Date()}`;
+const getNodeId = () => crypto.randomUUID();
 
 const initialNodes = [
-  { id: "1", data: { label: "Node 1" }, position: { x: 0, y: -50 } },
+  {
+    id: crypto.randomUUID(),
+    data: { label: "Node 1" },
+    position: { x: 0, y: -50 },
+  },
   { id: "2", data: { label: "Node 2" }, position: { x: 0, y: 50 } },
 ];
 
@@ -38,24 +40,52 @@ const SaveRestore = () => {
   const onSave = useCallback(() => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
-      localStorage.setItem(flowKey, JSON.stringify(flow));
+      console.log(JSON.stringify(flow));
+
+      // Send flow data to Flask API
+      fetch("http://localhost:5001/api/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(flow),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Error saving flow data");
+        });
     }
   }, [rfInstance]);
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
-      const storedFlow = localStorage.getItem(flowKey);
-      if (storedFlow) {
-        const flow = JSON.parse(storedFlow);
-        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-        setNodes(flow.nodes || []);
-        setEdges(flow.edges || []);
-        setViewport({ x, y, zoom });
+      try {
+        // Restore from Flask API
+        const response = await fetch("http://localhost:5001/api/restore");
+        const result = await response.json();
+
+        if (result.status === "success" && result.data) {
+          const flow = result.data;
+          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+          setViewport({ x, y, zoom });
+          console.log("Restored from Flask API:", flow);
+        } else {
+          alert("No saved data found on server!");
+        }
+      } catch (error) {
+        console.error("Error restoring from Flask API:", error);
+        alert("Error restoring data from server!");
       }
     };
 
     restoreFlow();
-  }, [setNodes, setViewport]);
+  }, [setNodes, setEdges, setViewport]);
 
   const onAdd = useCallback(() => {
     const newNode = {
@@ -74,9 +104,8 @@ const SaveRestore = () => {
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
-      onInit={(instance) => setRfInstance(instance)}
+      onInit={(instance) => setRfInstance(instance as any)}
       onConnect={onConnect}
-      onInit={setRfInstance}
       fitView
       fitViewOptions={{ padding: 2 }}
     >
