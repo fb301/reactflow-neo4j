@@ -14,6 +14,10 @@ import {
 import "@xyflow/react/dist/style.css";
 
 const getNodeId = () => crypto.randomUUID();
+const labelStyle = { fill: "#6b3d17ff", fontWeight: 700 };
+const labelBgPadding = [8, 4] as [number, number];
+const labelBgBorderRadius = 4;
+const labelBgStyle = { fill: "#ffcc00", fillOpacity: 0.7 };
 
 const initialNodes = [
   {
@@ -30,10 +34,10 @@ const initialEdges = [
     source: "1",
     target: "2",
     label: "connects to",
-    labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-    labelBgPadding: [8, 4] as [number, number],
-    labelBgBorderRadius: 4,
-    labelBgStyle: { fill: "#ffcc00", fillOpacity: 0.7 },
+    labelStyle,
+    labelBgPadding,
+    labelBgBorderRadius,
+    labelBgStyle,
   },
 ];
 
@@ -46,7 +50,6 @@ const SaveRestore = () => {
 
   const onConnect = useCallback(
     (params) => {
-      // Prompt user for edge label when connecting nodes
       const label = prompt(
         "Enter a label for this connection:",
         "connected to"
@@ -56,10 +59,10 @@ const SaveRestore = () => {
         ...params,
         id: `edge-${params.source}-${params.target}`,
         label: label || "connected to",
-        labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-        labelBgPadding: [8, 4] as [number, number],
-        labelBgBorderRadius: 4,
-        labelBgStyle: { fill: "#ffcc00", fillOpacity: 0.7 },
+        labelStyle,
+        labelBgPadding,
+        labelBgBorderRadius,
+        labelBgStyle,
       };
 
       setEdges((eds) => addEdge(newEdge, eds));
@@ -128,13 +131,10 @@ const SaveRestore = () => {
               ? {
                   ...e,
                   label: newLabel,
-                  labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                  labelBgPadding: [8, 4] as [number, number],
-                  labelBgBorderRadius: 4,
-                  labelBgStyle: {
-                    fill: "#ffcc00",
-                    fillOpacity: 0.7,
-                  },
+                  labelStyle,
+                  labelBgPadding,
+                  labelBgBorderRadius,
+                  labelBgStyle,
                 }
               : e
           )
