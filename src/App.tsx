@@ -9,15 +9,65 @@ import {
   addEdge,
   useReactFlow,
   Panel,
+  EdgeText,
+  getBezierPath,
+  type EdgeProps,
+  MiniMap,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 
+// Custom Edge Component using EdgeText
+const CustomLabeledEdge = (props: EdgeProps) => {
+  const {
+    id,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    data,
+    markerEnd,
+  } = props;
+
+  const [edgePath, labelX, labelY] = getBezierPath({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+  });
+
+  return (
+    <>
+      <path
+        id={id}
+        style={{ stroke: "#b1b1b7", strokeWidth: 2 }}
+        className="react-flow__edge-path"
+        d={edgePath}
+        markerEnd={markerEnd}
+      />
+      <EdgeText
+        x={labelX}
+        y={labelY}
+        label={String(data?.label || "connects to")}
+        labelStyle={{ fill: "#6b3d17ff", fontWeight: 700 }}
+        labelShowBg
+        labelBgStyle={{ fill: "#ffcc00", fillOpacity: 0.7 }}
+        labelBgPadding={[8, 4]}
+        labelBgBorderRadius={4}
+      />
+    </>
+  );
+};
+
+const edgeTypes = {
+  "custom-labeled": CustomLabeledEdge,
+};
+
 const getNodeId = () => crypto.randomUUID();
-const labelStyle = { fill: "#6b3d17ff", fontWeight: 700 };
-const labelBgPadding = [8, 4] as [number, number];
-const labelBgBorderRadius = 4;
-const labelBgStyle = { fill: "#ffcc00", fillOpacity: 0.7 };
 
 const initialNodes = [
   {
@@ -33,11 +83,8 @@ const initialEdges = [
     id: "e1-2",
     source: "1",
     target: "2",
-    label: "connects to",
-    labelStyle,
-    labelBgPadding,
-    labelBgBorderRadius,
-    labelBgStyle,
+    type: "custom-labeled",
+    data: { label: "connects to" },
   },
 ];
 
@@ -58,11 +105,8 @@ const SaveRestore = () => {
       const newEdge = {
         ...params,
         id: `edge-${params.source}-${params.target}`,
-        label: label || "connected to",
-        labelStyle,
-        labelBgPadding,
-        labelBgBorderRadius,
-        labelBgStyle,
+        type: "custom-labeled",
+        data: { label: label || "connected to" },
       };
 
       setEdges((eds) => addEdge(newEdge, eds));
@@ -122,7 +166,8 @@ const SaveRestore = () => {
   const onEdgeDoubleClick = useCallback(
     (event, edge) => {
       event.stopPropagation();
-      const newLabel = prompt("Edit edge label:", edge.label || "");
+      const currentLabel = edge.data?.label || edge.label || "";
+      const newLabel = prompt("Edit edge label:", currentLabel);
 
       if (newLabel !== null) {
         setEdges((edges) =>
@@ -130,11 +175,8 @@ const SaveRestore = () => {
             e.id === edge.id
               ? {
                   ...e,
-                  label: newLabel,
-                  labelStyle,
-                  labelBgPadding,
-                  labelBgBorderRadius,
-                  labelBgStyle,
+                  type: "custom-labeled",
+                  data: { ...e.data, label: newLabel },
                 }
               : e
           )
@@ -160,6 +202,7 @@ const SaveRestore = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
+      edgeTypes={edgeTypes}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onInit={(instance) => setRfInstance(instance as any)}
@@ -180,6 +223,7 @@ const SaveRestore = () => {
           add node
         </button>
       </Panel>
+      <MiniMap />
     </ReactFlow>
   );
 };

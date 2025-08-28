@@ -1,16 +1,44 @@
-import time
+from dotenv import load_dotenv
+from typing import cast
+from textwrap import dedent
+from typing_extensions import LiteralString
+import os
+
+import neo4j
+from neo4j import GraphDatabase, basic_auth
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+
+load_dotenv()
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
+
+"""
+Connect to database
+"""
+url = os.getenv("NEO4J_URI")
+username = os.getenv("NEO4J_USER")
+password = os.getenv("NEO4J_PASSWORD")
+neo4j_version = os.getenv("NEO4J_VERSION")
+database = os.getenv("NEO4J_DATABASE")
+
+with GraphDatabase.driver(url, auth=basic_auth(username, password)) as driver:
+    try:
+        driver.verify_connectivity()
+        print("Connection established.")
+    except Exception as e:
+        print(f"Error connecting: {e}")
+
+def query(q: LiteralString) -> LiteralString:
+    return cast(LiteralString, dedent(q).strip())
 
 
+"""
+SAVE
+"""
 saved_flow_data = None
-
-@app.route('/api/time')
-def get_current_time():
-    return {'time': time.time()}
 
 @app.route('/api/save', methods=['POST'])
 def save_flow():
@@ -27,6 +55,10 @@ def save_flow():
         print(f"Error saving flow data: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+
+"""
+RESTORE
+"""
 @app.route('/api/restore', methods=['GET'])
 def restore_flow():
     global saved_flow_data
@@ -41,4 +73,10 @@ def restore_flow():
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    host = os.environ.get('FLASK_RUN_HOST')
+    port = int(os.environ.get('FLASK_RUN_PORT'))
+    debug = os.environ.get('FLASK_DEBUG')
+    try:
+        app.run(host=host, port=port, debug=debug)
+    finally:
+        driver.close()
