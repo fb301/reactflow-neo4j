@@ -17,14 +17,25 @@ const getNodeId = () => crypto.randomUUID();
 
 const initialNodes = [
   {
-    id: crypto.randomUUID(),
+    id: "1",
     data: { label: "Node 1" },
     position: { x: 0, y: -50 },
   },
   { id: "2", data: { label: "Node 2" }, position: { x: 0, y: 50 } },
 ];
 
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+const initialEdges = [
+  {
+    id: "e1-2",
+    source: "1",
+    target: "2",
+    label: "connects to",
+    labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+    labelBgPadding: [8, 4] as [number, number],
+    labelBgBorderRadius: 4,
+    labelBgStyle: { fill: "#ffcc00", fillOpacity: 0.7 },
+  },
+];
 
 const SaveRestore = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -34,7 +45,25 @@ const SaveRestore = () => {
   const { setViewport } = useReactFlow();
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
+    (params) => {
+      // Prompt user for edge label when connecting nodes
+      const label = prompt(
+        "Enter a label for this connection:",
+        "connected to"
+      );
+
+      const newEdge = {
+        ...params,
+        id: `edge-${params.source}-${params.target}`,
+        label: label || "connected to",
+        labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+        labelBgPadding: [8, 4] as [number, number],
+        labelBgBorderRadius: 4,
+        labelBgStyle: { fill: "#ffcc00", fillOpacity: 0.7 },
+      };
+
+      setEdges((eds) => addEdge(newEdge, eds));
+    },
     [setEdges]
   );
   const onSave = useCallback(() => {
@@ -87,6 +116,34 @@ const SaveRestore = () => {
     restoreFlow();
   }, [setNodes, setEdges, setViewport]);
 
+  const onEdgeDoubleClick = useCallback(
+    (event, edge) => {
+      event.stopPropagation();
+      const newLabel = prompt("Edit edge label:", edge.label || "");
+
+      if (newLabel !== null) {
+        setEdges((edges) =>
+          edges.map((e) =>
+            e.id === edge.id
+              ? {
+                  ...e,
+                  label: newLabel,
+                  labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                  labelBgPadding: [8, 4] as [number, number],
+                  labelBgBorderRadius: 4,
+                  labelBgStyle: {
+                    fill: "#ffcc00",
+                    fillOpacity: 0.7,
+                  },
+                }
+              : e
+          )
+        );
+      }
+    },
+    [setEdges]
+  );
+
   const onAdd = useCallback(() => {
     const newNode = {
       id: getNodeId(),
@@ -104,8 +161,10 @@ const SaveRestore = () => {
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
       onInit={(instance) => setRfInstance(instance as any)}
       onConnect={onConnect}
+      onEdgeDoubleClick={onEdgeDoubleClick}
       fitView
       fitViewOptions={{ padding: 2 }}
     >

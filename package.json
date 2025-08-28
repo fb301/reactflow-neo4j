@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "api": "cd api && uv run flask run --no-debugger"
+    "api": "cd api && uv run python api.py"
   },
   "dependencies": {
     "@xyflow/react": "^12.8.4",
