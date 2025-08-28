@@ -1,0 +1,43 @@
+{
+  "nodes": [
+    {
+      "id": "a5e38551-63b7-47db-9322-a94c37ed6b5d",
+      "data": { "label": "Node 1" },
+      "position": { "x": 0, "y": -50 },
+      "measured": { "width": 150, "height": 37 }
+    },
+    {
+      "id": "2",
+      "data": { "label": "Node 2" },
+      "position": { "x": 0, "y": 50 },
+      "measured": { "width": 150, "height": 37 }
+    },
+    {
+      "id": "1e8018cc-6e21-47ad-807b-14dbe5661c41",
+      "data": { "label": "Added node" },
+      "position": { "x": -247.69917554379754, "y": -50.50617477774446 },
+      "measured": { "width": 150, "height": 37 },
+      "selected": true,
+      "dragging": false
+    }
+  ],
+  "edges": [
+    { "id": "e1-2", "source": "1", "target": "2" },
+    {
+      "source": "a5e38551-63b7-47db-9322-a94c37ed6b5d",
+      "target": "2",
+      "id": "xy-edge__a5e38551-63b7-47db-9322-a94c37ed6b5d-2"
+    },
+    {
+      "source": "1e8018cc-6e21-47ad-807b-14dbe5661c41",
+      "target": "a5e38551-63b7-47db-9322-a94c37ed6b5d",
+      "id": "xy-edge__1e8018cc-6e21-47ad-807b-14dbe5661c41-a5e38551-63b7-47db-9322-a94c37ed6b5d"
+    },
+    {
+      "source": "a5e38551-63b7-47db-9322-a94c37ed6b5d",
+      "target": "1e8018cc-6e21-47ad-807b-14dbe5661c41",
+      "id": "xy-edge__a5e38551-63b7-47db-9322-a94c37ed6b5d-1e8018cc-6e21-47ad-807b-14dbe5661c41"
+    }
+  ],
+  "viewport": { "x": 810, "y": 426.5, "zoom": 2 }
+}
