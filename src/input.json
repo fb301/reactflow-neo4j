@@ -1,0 +1,43 @@
+{
+  "nodes": [
+    {
+      "data": { "label": "Node 1" },
+      "dragging": false,
+      "id": "1",
+      "measured": { "height": 37, "width": 150 },
+      "position": { "x": 136, "y": -101 },
+      "selected": false
+    },
+    {
+      "data": { "label": "Node 2" },
+      "id": "2",
+      "measured": { "height": 37, "width": 150 },
+      "position": { "x": 0, "y": 50 }
+    },
+    {
+      "id": "c9114f28-ca6c-4a85-bd50-f57f47b4efbf",
+      "data": { "label": "Added node" },
+      "position": { "x": -7.222767797071981, "y": -189.70512694079136 },
+      "measured": { "width": 150, "height": 37 },
+      "selected": false,
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "data": { "label": "connects to" },
+      "id": "e1-2",
+      "source": "1",
+      "target": "2",
+      "type": "custom-labeled"
+    },
+    {
+      "source": "c9114f28-ca6c-4a85-bd50-f57f47b4efbf",
+      "target": "1",
+      "id": "edge-c9114f28-ca6c-4a85-bd50-f57f47b4efbf-1",
+      "type": "custom-labeled",
+      "data": { "label": "relation" }
+    }
+  ],
+  "viewport": { "x": 519, "y": 453.5, "zoom": 2 }
+}
