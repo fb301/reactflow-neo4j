@@ -14,10 +14,11 @@ import {
   type EdgeProps,
   MiniMap,
 } from "@xyflow/react";
-
+import { ApolloProvider } from "@apollo/client/react";
+import { client } from "./gql/client.js";
+import { SAVE_FLOW, RESTORE_FLOW } from "./gql/queries.js";
 import "@xyflow/react/dist/style.css";
 
-// Custom Edge Component using EdgeText
 const CustomLabeledEdge = (props: EdgeProps) => {
   const {
     id,
@@ -113,54 +114,62 @@ const SaveRestore = () => {
     },
     [setEdges]
   );
-  const onSave = useCallback(() => {
-    if (rfInstance) {
-      const flow = rfInstance.toObject();
-      console.log(JSON.stringify(flow));
 
-      // Send flow data to Flask API
-      fetch("http://localhost:5001/api/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(flow),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert("Error saving flow data");
+  const onSave = useCallback(async () => {
+    if (rfInstance) {
+      try {
+        const flow = rfInstance.toObject();
+
+        const graphqlData = {
+          nodes: flow.nodes.map((node) => ({
+            id: node.id,
+            data: { label: node.data.label },
+            position: { x: node.position.x, y: node.position.y },
+            type: node.type || "default",
+          })),
+          relationships: flow.edges.map((edge) => ({
+            id: edge.id,
+            source: edge.source,
+            target: edge.target,
+            type: edge.type || "default",
+            data: edge.data ? { label: edge.data.label } : null,
+          })),
+        };
+
+        await client.mutate({
+          mutation: SAVE_FLOW,
+          variables: { flowData: graphqlData },
         });
+        console.log("Data save sucess");
+      } catch (error) {
+        console.log("Error: ", error);
+      }
     }
   }, [rfInstance]);
 
-  const onRestore = useCallback(() => {
-    const restoreFlow = async () => {
-      try {
-        // Restore from Flask API
-        const response = await fetch("http://localhost:5001/api/restore");
-        const result = await response.json();
+  const onRestore = useCallback(async () => {
+    try {
+      type RestoreFlowResult = {
+        restoreFlow?: {
+          nodes?: any[];
+          relationships?: any[];
+        };
+      };
 
-        if (result.status === "success" && result.data) {
-          const flow = result.data;
-          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-          setNodes(flow.nodes || []);
-          setEdges(flow.edges || []);
-          setViewport({ x, y, zoom });
-          console.log("Restored from Flask API:", flow);
-        } else {
-          alert("No saved data found on server!");
-        }
-      } catch (error) {
-        console.error("Error restoring from Flask API:", error);
-        alert("Error restoring data from server!");
+      const result = await client.query<RestoreFlowResult>({
+        query: RESTORE_FLOW,
+        fetchPolicy: "network-only",
+      });
+
+      const data = result.data?.restoreFlow;
+      if (data) {
+        setNodes(data.nodes || []);
+        setEdges(data.relationships || []);
       }
-    };
-
-    restoreFlow();
+      console.log("Data restored success");
+    } catch (error) {
+      console.log("Error restoring flow:", error);
+    }
   }, [setNodes, setEdges, setViewport]);
 
   const onEdgeDoubleClick = useCallback(
@@ -229,7 +238,9 @@ const SaveRestore = () => {
 };
 
 export default () => (
-  <ReactFlowProvider>
-    <SaveRestore />
-  </ReactFlowProvider>
+  <ApolloProvider client={client}>
+    <ReactFlowProvider>
+      <SaveRestore />
+    </ReactFlowProvider>
+  </ApolloProvider>
 );

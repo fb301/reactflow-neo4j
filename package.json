@@ -11,9 +11,12 @@
     "api": "cd api && uv run python api.py"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.3",
     "@xyflow/react": "^12.8.4",
+    "graphql": "^16.11.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
