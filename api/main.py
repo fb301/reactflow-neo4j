@@ -1,15 +1,19 @@
-from typing import Union
-
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from gql import graphql_app
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+app.add_route("/", graphql_app)
+app.add_websocket_route("/", graphql_app)
 
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+app.add_route("/graphql", graphql_app)
+app.add_websocket_route("/graphql", graphql_app)
