@@ -123,16 +123,14 @@ const SaveRestore = () => {
         const graphqlData = {
           nodes: flow.nodes.map((node) => ({
             id: node.id,
-            data: { label: node.data.label },
+            label: node.data.label,
             position: { x: node.position.x, y: node.position.y },
-            type: node.type || "default",
           })),
           relationships: flow.edges.map((edge) => ({
             id: edge.id,
             source: edge.source,
             target: edge.target,
-            type: edge.type || "default",
-            data: edge.data ? { label: edge.data.label } : null,
+            label: edge.data?.label,
           })),
         };
 
@@ -163,8 +161,26 @@ const SaveRestore = () => {
 
       const data = result.data?.restoreFlow;
       if (data) {
-        setNodes(data.nodes || []);
-        setEdges(data.relationships || []);
+        // Map GraphQL nodes to ReactFlow format
+        const mappedNodes =
+          data.nodes?.map((node) => ({
+            id: node.id,
+            data: { label: node.label },
+            position: node.position,
+          })) || [];
+
+        // Map GraphQL relationships to ReactFlow edges format
+        const mappedEdges =
+          data.relationships?.map((rel) => ({
+            id: rel.id,
+            source: rel.source,
+            target: rel.target,
+            type: "custom-labeled",
+            data: { label: rel.label || "connects to" },
+          })) || [];
+
+        setNodes(mappedNodes);
+        setEdges(mappedEdges);
       }
       console.log("Data restored success");
     } catch (error) {

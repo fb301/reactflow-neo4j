@@ -11,28 +11,17 @@ export const RESTORE_FLOW = gql`
     restoreFlow {
       nodes {
         id
-        data {
-          label
-        }
+        label
         position {
           x
           y
         }
-        type
       }
       relationships {
         id
         source
         target
-        type
-        data {
-          label
-        }
-      }
-      viewport {
-        x
-        y
-        zoom
+        label
       }
     }
   }
