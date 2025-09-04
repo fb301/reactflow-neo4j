@@ -1,48 +1,31 @@
 import strawberry
 from typing import List, Optional
 
-@strawberry.type
-class NodeData:
-    label: str
-
+# Simplified output types
 @strawberry.type 
 class Position:
     x: float
     y: float
 
 @strawberry.type
-class Viewport:
-    x: float
-    y: float
-    zoom: float
-
-@strawberry.type
 class Node:
     id: str
-    data: NodeData
+    label: str
     position: Position
-    type: str
-
-@strawberry.type
-class RelationshipData:
-    label: Optional[str] = None
 
 @strawberry.type
 class Relationship:
     id: str
     source: str
     target: str
-    type: str
-    data: Optional[RelationshipData] = None
+    label: Optional[str] = None
 
 @strawberry.type
 class FlowData:
     nodes: List[Node]
     relationships: List[Relationship]
-    viewport: Optional[Viewport] = None
 
-
-""" INPUT """
+# Input types
 @strawberry.input
 class NodeDataInput:
     label: str
@@ -53,32 +36,19 @@ class PositionInput:
     y: float
 
 @strawberry.input
-class ViewportInput:
-    x: float
-    y: float
-    zoom: float
-
-@strawberry.input
 class NodeInput:
     id: str
-    data: NodeDataInput
+    label: str
     position: PositionInput
-    type: str
-
-@strawberry.input
-class RelationshipDataInput:
-    label: Optional[str] = None
 
 @strawberry.input
 class RelationshipInput:
     id: str
+    label: str
     source: str
     target: str
-    type: str
-    data: Optional[RelationshipDataInput] = None
 
 @strawberry.input
 class FlowDataInput:
     nodes: List[NodeInput]
     relationships: List[RelationshipInput]
-    viewport: Optional[ViewportInput] = None

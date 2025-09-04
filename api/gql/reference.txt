@@ -1,0 +1,17 @@
+FlowDataInput(
+    nodes=[
+        NodeInput(id='1', data=NodeDataInput(label='Node 1'), position=PositionInput(x=0.0, y=-50.0), type='default'), 
+        NodeInput(id='2', data=NodeDataInput(label='Node 2'), position=PositionInput(x=0.0, y=50.0), type='default')], 
+    relationships=[
+        RelationshipInput(id='e1-2', source='1', target='2', type='custom-labeled', 
+        data=RelationshipDataInput(label='connects to'))], viewport=None)
+
+
+FlowDataInput(nodes=[
+    NodeInput(id='2', label='Node 2', position=PositionInput(x=0.0, y=50.0)), 
+    NodeInput(id='1', label='Node 1', position=PositionInput(x=206.5, y=-149.5))], 
+    
+    relationships=[
+        RelationshipInput(
+        id='e1-2', label='hallo', source='1', target='2'
+        )])
