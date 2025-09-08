@@ -6,4 +6,5 @@ FlowDataInput(
         
         relationships=[
             RelationshipInput(id='e1-2', label='connects to', source='1', target='2'),
-            RelationshipInput(id='edge-f6722301-a126-462a-ab4f-715fd2f34f80-1', label='hej', source='f6722301-a126-462a-ab4f-715fd2f34f80', target='1')])
+            RelationshipInput(id='edge-f6722301-a126-462a-ab4f-715fd2f34f80-1', label='hej', source='f6722301-a126-462a-ab4f-715fd2f34f80', target='1')
+            ])

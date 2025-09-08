@@ -27,3 +27,4 @@ dist-ssr
 /api/.venv/.env
 .env
 .env.local
+/api/gql/reference.txt
