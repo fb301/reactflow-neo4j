@@ -1,7 +1,13 @@
 import React, { useCallback } from "react";
 import { ReactFlowInstance } from "@xyflow/react";
 import { client } from "../gql/client.js";
-import { SAVE_FLOW } from "../gql/queries.js";
+import { gql } from "@apollo/client";
+
+const SAVE_FLOW = gql`
+  mutation SaveFlow($flowData: FlowDataInput!) {
+    saveFlow(flowData: $flowData)
+  }
+`;
 
 interface OnSaveProps {
   rfInstance: ReactFlowInstance | null;
