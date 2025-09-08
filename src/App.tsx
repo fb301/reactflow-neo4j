@@ -17,6 +17,8 @@ import {
 import { ApolloProvider } from "@apollo/client/react";
 import { client } from "./gql/client.js";
 import { SAVE_FLOW, RESTORE_FLOW } from "./gql/queries.js";
+import OnSave from "./components/OnSave";
+import OnRestore from "./components/OnRestore";
 import "@xyflow/react/dist/style.css";
 
 const CustomLabeledEdge = (props: EdgeProps) => {
@@ -70,7 +72,9 @@ const edgeTypes = {
 
 const getNodeId = () => crypto.randomUUID();
 
-const initialNodes = [
+import type { Node, Edge } from "@xyflow/react";
+
+const initialNodes: Node[] = [
   {
     id: "1",
     data: { label: "Node 1" },
@@ -85,29 +89,25 @@ const initialEdges = [
     source: "1",
     target: "2",
     type: "custom-labeled",
-    data: { label: "connects to" },
+    data: { label: "connects" },
   },
 ];
-
 const SaveRestore = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
 
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const { setViewport } = useReactFlow();
 
   const onConnect = useCallback(
     (params) => {
-      const label = prompt(
-        "Enter a label for this connection:",
-        "connected to"
-      );
+      const label = prompt("Enter a label for this connection:", "connected");
 
       const newEdge = {
         ...params,
         id: `edge-${params.source}-${params.target}`,
         type: "custom-labeled",
-        data: { label: label || "connected to" },
+        data: { label: label || "connected" },
       };
 
       setEdges((eds) => addEdge(newEdge, eds));
@@ -115,84 +115,11 @@ const SaveRestore = () => {
     [setEdges]
   );
 
-  const onSave = useCallback(async () => {
-    if (rfInstance) {
-      try {
-        const flow = rfInstance.toObject();
-
-        const graphqlData = {
-          nodes: flow.nodes.map((node) => ({
-            id: node.id,
-            label: node.data.label,
-            position: { x: node.position.x, y: node.position.y },
-          })),
-          relationships: flow.edges.map((edge) => ({
-            id: edge.id,
-            source: edge.source,
-            target: edge.target,
-            label: edge.data?.label,
-          })),
-        };
-
-        await client.mutate({
-          mutation: SAVE_FLOW,
-          variables: { flowData: graphqlData },
-        });
-        console.log("Data save sucess");
-      } catch (error) {
-        console.log("Error: ", error);
-      }
-    }
-  }, [rfInstance]);
-
-  const onRestore = useCallback(async () => {
-    try {
-      type RestoreFlowResult = {
-        restoreFlow?: {
-          nodes?: any[];
-          relationships?: any[];
-        };
-      };
-
-      const result = await client.query<RestoreFlowResult>({
-        query: RESTORE_FLOW,
-        fetchPolicy: "network-only",
-      });
-
-      const data = result.data?.restoreFlow;
-      if (data) {
-        // Map GraphQL nodes to ReactFlow format
-        const mappedNodes =
-          data.nodes?.map((node) => ({
-            id: node.id,
-            data: { label: node.label },
-            position: node.position,
-          })) || [];
-
-        // Map GraphQL relationships to ReactFlow edges format
-        const mappedEdges =
-          data.relationships?.map((rel) => ({
-            id: rel.id,
-            source: rel.source,
-            target: rel.target,
-            type: "custom-labeled",
-            data: { label: rel.label || "connects to" },
-          })) || [];
-
-        setNodes(mappedNodes);
-        setEdges(mappedEdges);
-      }
-      console.log("Data restored success");
-    } catch (error) {
-      console.log("Error restoring flow:", error);
-    }
-  }, [setNodes, setEdges, setViewport]);
-
   const onEdgeDoubleClick = useCallback(
     (event, edge) => {
       event.stopPropagation();
-      const currentLabel = edge.data?.label || edge.label || "";
-      const newLabel = prompt("Edit edge label:", currentLabel);
+      const currentEdgeLabel = edge.data?.label || edge.label || "";
+      const newLabel = prompt("Edit edge label:", currentEdgeLabel);
 
       if (newLabel !== null) {
         setEdges((edges) =>
@@ -209,6 +136,28 @@ const SaveRestore = () => {
       }
     },
     [setEdges]
+  );
+
+  const onNodeDoubleClick = useCallback(
+    (event, node) => {
+      event.stopPropagation();
+      const currentNodeLabel = node.data?.label || node.label || "";
+      const newLabel = prompt("Edit nodes label:", currentNodeLabel);
+
+      if (newLabel !== null) {
+        setNodes((nds) =>
+          nds.map((e) =>
+            e.id === node.id
+              ? {
+                  ...e,
+                  data: { ...e.data, label: newLabel },
+                }
+              : e
+          )
+        );
+      }
+    },
+    [setNodes]
   );
 
   const onAdd = useCallback(() => {
@@ -233,17 +182,14 @@ const SaveRestore = () => {
       onInit={(instance) => setRfInstance(instance as any)}
       onConnect={onConnect}
       onEdgeDoubleClick={onEdgeDoubleClick}
+      onNodeDoubleClick={onNodeDoubleClick}
       fitView
       fitViewOptions={{ padding: 2 }}
     >
       <Background />
       <Panel position="top-right">
-        <button className="xy-theme__button" onClick={onSave}>
-          save
-        </button>
-        <button className="xy-theme__button" onClick={onRestore}>
-          restore
-        </button>
+        <OnSave rfInstance={rfInstance} />
+        <OnRestore setNodes={setNodes} setEdges={setEdges} />
         <button className="xy-theme__button" onClick={onAdd}>
           add node
         </button>

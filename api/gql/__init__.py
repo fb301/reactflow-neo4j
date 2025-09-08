@@ -1,7 +1,8 @@
 import strawberry
 from strawberry.asgi import GraphQL
 
-from .resolvers import QueryResolver, MutationResolver, FlowData, FlowDataInput
+from .resolvers import QueryResolver, MutationResolver
+from .schemas import FlowData, FlowDataInput
 
 
 @strawberry.type
