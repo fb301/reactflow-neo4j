@@ -9,10 +9,8 @@ const RESTORE_FLOW = gql`
       nodes {
         id
         label
-        position {
-          x
-          y
-        }
+        x
+        y
       }
       relationships {
         id
@@ -46,16 +44,14 @@ const OnRestore: React.FC<OnRestoreProps> = ({ setNodes, setEdges }) => {
 
       const data = result.data?.restoreFlow;
       if (data) {
-        // Map GraphQL nodes to ReactFlow format
         const mappedNodes: Node[] =
           data.nodes?.map((node) => ({
             id: node.id,
             data: { label: node.label },
-            position: node.position,
+            position: { x: node.x, y: node.y },
             type: "default",
           })) || [];
 
-        // Map GraphQL relationships to ReactFlow edges format
         const mappedEdges: Edge[] =
           data.relationships?.map((rel) => ({
             id: rel.id,

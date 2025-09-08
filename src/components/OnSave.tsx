@@ -23,7 +23,8 @@ const OnSave: React.FC<OnSaveProps> = ({ rfInstance }) => {
           nodes: flow.nodes.map((node) => ({
             id: node.id,
             label: node.data.label,
-            position: { x: node.position.x, y: node.position.y },
+            x: node.position.x,
+            y: node.position.y,
           })),
           relationships: flow.edges.map((edge) => ({
             id: edge.id,
