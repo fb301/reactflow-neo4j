@@ -1,17 +1,9 @@
 FlowDataInput(
     nodes=[
-        NodeInput(id='1', data=NodeDataInput(label='Node 1'), position=PositionInput(x=0.0, y=-50.0), type='default'), 
-        NodeInput(id='2', data=NodeDataInput(label='Node 2'), position=PositionInput(x=0.0, y=50.0), type='default')], 
-    relationships=[
-        RelationshipInput(id='e1-2', source='1', target='2', type='custom-labeled', 
-        data=RelationshipDataInput(label='connects to'))], viewport=None)
-
-
-FlowDataInput(nodes=[
-    NodeInput(id='2', label='Node 2', position=PositionInput(x=0.0, y=50.0)), 
-    NodeInput(id='1', label='Node 1', position=PositionInput(x=206.5, y=-149.5))], 
-    
-    relationships=[
-        RelationshipInput(
-        id='e1-2', label='hallo', source='1', target='2'
-        )])
+        NodeInput(id='1', label='Node 1', position=PositionInput(x=0.0, y=-50.0)),
+        NodeInput(id='2', label='Node 2', position=PositionInput(x=0.0, y=50.0)),
+        NodeInput(id='f6722301-a126-462a-ab4f-715fd2f34f80', label='Added node', position=PositionInput(x=43.34179968214039, y=-207.5287475734059))],
+        
+        relationships=[
+            RelationshipInput(id='e1-2', label='connects to', source='1', target='2'),
+            RelationshipInput(id='edge-f6722301-a126-462a-ab4f-715fd2f34f80-1', label='hej', source='f6722301-a126-462a-ab4f-715fd2f34f80', target='1')])

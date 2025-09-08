@@ -27,10 +27,6 @@ class FlowData:
 
 # Input types
 @strawberry.input
-class NodeDataInput:
-    label: str
-
-@strawberry.input
 class PositionInput:
     x: float
     y: float

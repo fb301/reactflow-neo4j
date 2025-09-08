@@ -1,9 +1,8 @@
-import json
 from .schemas import (
     Position, Node, Relationship, FlowData, FlowDataInput
 ) 
 from typing_extensions import LiteralString
-from typing import Optional, cast
+from typing import cast
 from textwrap import dedent
 from database import get_driver
 
@@ -75,7 +74,7 @@ class MutationResolver:
     async def save_flow(flow_data: FlowDataInput) -> bool:
         """Save the flow data to Neo4j"""
         driver = get_driver()
-        print(flow_data)
+        # print(flow_data)
         try:
             async with driver.session() as session:
                 async def save_transaction(tx):
