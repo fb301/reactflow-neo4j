@@ -1,7 +1,28 @@
 import React, { useCallback } from "react";
 import type { Node, Edge } from "@xyflow/react";
 import { client } from "../gql/client.js";
-import { RESTORE_FLOW } from "../gql/queries.js";
+import { gql } from "@apollo/client";
+
+const RESTORE_FLOW = gql`
+  query RestoreFlow {
+    restoreFlow {
+      nodes {
+        id
+        label
+        position {
+          x
+          y
+        }
+      }
+      relationships {
+        id
+        source
+        target
+        label
+      }
+    }
+  }
+`;
 
 interface OnRestoreProps {
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>;

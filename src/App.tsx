@@ -16,7 +16,6 @@ import {
 } from "@xyflow/react";
 import { ApolloProvider } from "@apollo/client/react";
 import { client } from "./gql/client.js";
-import { SAVE_FLOW, RESTORE_FLOW } from "./gql/queries.js";
 import OnSave from "./components/OnSave";
 import OnRestore from "./components/OnRestore";
 import "@xyflow/react/dist/style.css";
