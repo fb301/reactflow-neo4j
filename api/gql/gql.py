@@ -15,7 +15,8 @@ def query(q: LiteralString) -> LiteralString:
 @strawberry.type
 class Node:
     id: str
-    label: str
+    nodeType: str
+    attributes: strawberry.scalars.JSON
     x: float
     y: float
 
@@ -35,7 +36,8 @@ class FlowData:
 @strawberry.input
 class NodeInput:
     id: str
-    label: str
+    nodeType: str
+    attributes: strawberry.scalars.JSON
     x: float
     y: float
 
@@ -58,11 +60,12 @@ class Query:
         driver = get_driver()
         try:
             async with driver.session() as session:
-                # Get all nodes
+                # Get all nodes with their properties
                 nodes_result = await session.run(query("""
                     MATCH (n) 
                     WHERE n.flow_node_id IS NOT NULL
-                    RETURN n.flow_node_id as id, n.label as label, n.x as x, n.y as y
+                    RETURN n.flow_node_id as id, n.node_type as node_type, 
+                           n.x as x, n.y as y, properties(n) as props
                 """))
                 nodes_data = await nodes_result.data()
                 
@@ -78,7 +81,20 @@ class Query:
                 rels_data = await rels_result.data()
                 
                 # Convert to GraphQL types
-                nodes = [Node(id=n["id"], label=n["label"], x=n["x"], y=n["y"]) for n in nodes_data]
+                nodes = []
+                for n in nodes_data:
+                    # Extract attributes (exclude system properties)
+                    attrs = {k: v for k, v in n["props"].items() 
+                            if k not in ["flow_node_id", "node_type", "x", "y"]}
+                    
+                    nodes.append(Node(
+                        id=n["id"], 
+                        nodeType=n["node_type"] or "Node",
+                        attributes=attrs,
+                        x=n["x"], 
+                        y=n["y"]
+                    ))
+                
                 relationships = [Relationship(id=r["id"], source=r["source"], target=r["target"], label=r["label"]) for r in rels_data]
                 
                 return FlowData(nodes=nodes, relationships=relationships)
@@ -93,6 +109,7 @@ class Mutation:
     async def save_flow(self, flow_data: FlowDataInput) -> bool:
         driver = get_driver()
         try:
+            print(f"Save flow called with {len(flow_data.nodes)} nodes")
             async with driver.session() as session:
 
                 await session.run(query("""
@@ -103,18 +120,28 @@ class Mutation:
                 
                 # Create nodes
                 if flow_data.nodes:
-                    labels = [node.label.replace(" ", "_") for node in flow_data.nodes]
-                    props = [{
-                        "flow_node_id": node.id,
-                        "label": node.label,
-                        "x": node.x,
-                        "y": node.y
-                    } for node in flow_data.nodes]
-                    
-                    await session.run(
-                        query("CALL apoc.create.nodes($labels, $props)"),
-                        {"labels": labels, "props": props}
-                    )
+                    for node in flow_data.nodes:
+                        # Clean the nodeType to make it a valid Neo4j label
+                        node_label = "".join(c for c in node.nodeType if c.isalnum() or c == "_")
+                        if not node_label or not node_label[0].isalpha():
+                            node_label = "Node_" + node_label
+                        
+                        node_props = {
+                            "flow_node_id": node.id,
+                            "node_type": node.nodeType,
+                            "x": node.x,
+                            "y": node.y
+                        }
+                        # Add all attributes as properties
+                        if node.attributes:
+                            node_props.update(node.attributes)
+                        
+                        # Create each node individually with its specific label
+                        print(f"Creating node: label={node_label}, props={node_props}")
+                        await session.run(
+                            query("CALL apoc.create.nodes([$label], [$props])"),
+                            {"label": node_label, "props": node_props}
+                        )
                 
                 # Create relationships
                 if flow_data.relationships:

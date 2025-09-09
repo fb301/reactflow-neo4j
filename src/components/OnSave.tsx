@@ -15,14 +15,17 @@ interface OnSaveProps {
 
 const OnSave: React.FC<OnSaveProps> = ({ rfInstance }) => {
   const onSave = useCallback(async () => {
+    console.log("OnSave clicked");
     if (rfInstance) {
       try {
         const flow = rfInstance.toObject();
+        console.log("Flow object:", flow);
 
         const graphqlData = {
           nodes: flow.nodes.map((node) => ({
             id: node.id,
-            label: node.data.label,
+            nodeType: node.data.nodeType || "Node",
+            attributes: node.data.attributes || {},
             x: node.position.x,
             y: node.position.y,
           })),
@@ -42,6 +45,8 @@ const OnSave: React.FC<OnSaveProps> = ({ rfInstance }) => {
       } catch (error) {
         console.log("Error: ", error);
       }
+    } else {
+      console.log("No rfInstance available");
     }
   }, [rfInstance]);
 

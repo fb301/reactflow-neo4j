@@ -8,7 +8,8 @@ const RESTORE_FLOW = gql`
     restoreFlow {
       nodes {
         id
-        label
+        nodeType
+        attributes
         x
         y
       }
@@ -47,9 +48,12 @@ const OnRestore: React.FC<OnRestoreProps> = ({ setNodes, setEdges }) => {
         const mappedNodes: Node[] =
           data.nodes?.map((node) => ({
             id: node.id,
-            data: { label: node.label },
+            type: "dynamic",
+            data: {
+              nodeType: node.nodeType,
+              attributes: node.attributes,
+            },
             position: { x: node.x, y: node.y },
-            type: "default",
           })) || [];
 
         const mappedEdges: Edge[] =

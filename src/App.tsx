@@ -18,6 +18,7 @@ import { ApolloProvider } from "@apollo/client/react";
 import { client } from "./gql/client.js";
 import OnSave from "./components/OnSave";
 import OnRestore from "./components/OnRestore";
+import DynamicNode from "./components/DynamicNode";
 import "@xyflow/react/dist/style.css";
 
 const CustomLabeledEdge = (props: EdgeProps) => {
@@ -55,9 +56,9 @@ const CustomLabeledEdge = (props: EdgeProps) => {
         x={labelX}
         y={labelY}
         label={String(data?.label || "connects to")}
-        labelStyle={{ fill: "#6b3d17ff", fontWeight: 700 }}
+        labelStyle={{ fill: "#080808ff", fontWeight: 700 }}
         labelShowBg
-        labelBgStyle={{ fill: "#ffcc00", fillOpacity: 0.7 }}
+        labelBgStyle={{ fill: "#868686ff", fillOpacity: 0.7 }}
         labelBgPadding={[8, 4]}
         labelBgBorderRadius={4}
       />
@@ -69,26 +70,45 @@ const edgeTypes = {
   "custom-labeled": CustomLabeledEdge,
 };
 
+const nodeTypes = {
+  dynamic: DynamicNode,
+};
+
 const getNodeId = () => crypto.randomUUID();
 
 import type { Node, Edge } from "@xyflow/react";
 
+const firstNode = getNodeId();
+const secondNode = getNodeId();
+
 const initialNodes: Node[] = [
   {
-    id: "1",
-    data: { label: "Node 1" },
-    position: { x: 0, y: -50 },
+    id: firstNode,
+    type: "dynamic",
+    data: {
+      nodeType: "Actor",
+      attributes: { Name: "Tom Hanks", Age: "67" },
+    },
+    position: { x: 0, y: -100 },
   },
-  { id: "2", data: { label: "Node 2" }, position: { x: 0, y: 50 } },
+  {
+    id: secondNode,
+    type: "dynamic",
+    data: {
+      nodeType: "Movie",
+      attributes: { Title: "Forrest Gump", Year: "1994" },
+    },
+    position: { x: 0, y: 100 },
+  },
 ];
 
 const initialEdges = [
   {
     id: "e1-2",
-    source: "1",
-    target: "2",
+    source: firstNode,
+    target: secondNode,
     type: "custom-labeled",
-    data: { label: "connects" },
+    data: { label: "ACTED_IN" },
   },
 ];
 const SaveRestore = () => {
@@ -137,32 +157,19 @@ const SaveRestore = () => {
     [setEdges]
   );
 
-  const onNodeDoubleClick = useCallback(
-    (event, node) => {
-      event.stopPropagation();
-      const currentNodeLabel = node.data?.label || node.label || "";
-      const newLabel = prompt("Edit nodes label:", currentNodeLabel);
-
-      if (newLabel !== null) {
-        setNodes((nds) =>
-          nds.map((e) =>
-            e.id === node.id
-              ? {
-                  ...e,
-                  data: { ...e.data, label: newLabel },
-                }
-              : e
-          )
-        );
-      }
-    },
-    [setNodes]
-  );
-
   const onAdd = useCallback(() => {
+    const nodeType =
+      prompt("Node type (e.g., Actor, Movie, Director):") || "Node";
+    const attributeName = prompt("First attribute name:") || "Name";
+    const attributeValue = prompt("First attribute value:") || "New Value";
+
     const newNode = {
       id: getNodeId(),
-      data: { label: "Added node" },
+      type: "dynamic",
+      data: {
+        nodeType: nodeType,
+        attributes: { [attributeName]: attributeValue },
+      },
       position: {
         x: (Math.random() - 0.5) * 400,
         y: (Math.random() - 0.5) * 400,
@@ -175,13 +182,13 @@ const SaveRestore = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
+      nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onInit={(instance) => setRfInstance(instance as any)}
       onConnect={onConnect}
       onEdgeDoubleClick={onEdgeDoubleClick}
-      onNodeDoubleClick={onNodeDoubleClick}
       fitView
       fitViewOptions={{ padding: 2 }}
     >
