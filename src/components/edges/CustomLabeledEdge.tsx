@@ -51,7 +51,7 @@ const CustomLabeledEdge = (props: EdgeProps) => {
         label={String(data?.label || "connects to")}
         labelStyle={{ fill: "#080808ff", fontWeight: 700 }}
         labelShowBg
-        labelBgStyle={{ fill: "#868686ff", fillOpacity: 0.7 }}
+        labelBgStyle={{ fill: "#ecececff", fillOpacity: 0.7 }}
         labelBgPadding={[8, 4]}
         labelBgBorderRadius={4}
       />

@@ -25,7 +25,7 @@ export const useEdgeOperations = ({ setEdges }: UseEdgeOperationsProps) => {
       const label = prompt("Enter a label for this relation:", "connected");
 
       const newEdge = {
-        ...params, // source and target should be correct from ReactFlow
+        ...params,
         id: `edge-${params.source}-${params.target}`,
         type: "custom-labeled",
         markerEnd: {

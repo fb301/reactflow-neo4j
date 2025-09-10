@@ -4,6 +4,7 @@ import { ApolloProvider } from "@apollo/client/react";
 import { client } from "./gql/client.js";
 import Canvas from "./components/canvas/Canvas";
 import { initialNodes, initialEdges } from "./data/initialFlowData";
+
 import "@xyflow/react/dist/style.css";
 
 const App = () => (
