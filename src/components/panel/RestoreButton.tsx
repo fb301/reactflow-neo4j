@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import type { Node, Edge } from "@xyflow/react";
 import { MarkerType } from "@xyflow/react";
-import { client } from "../gql/client.js";
+import { client } from "../../gql/client.js";
 import { gql } from "@apollo/client";
 
 const RESTORE_FLOW = gql`
@@ -24,12 +24,15 @@ const RESTORE_FLOW = gql`
   }
 `;
 
-interface OnRestoreProps {
+interface RestoreButtonProps {
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
 }
 
-const OnRestore: React.FC<OnRestoreProps> = ({ setNodes, setEdges }) => {
+const RestoreButton: React.FC<RestoreButtonProps> = ({
+  setNodes,
+  setEdges,
+}) => {
   const onRestore = useCallback(async () => {
     try {
       type RestoreFlowResult = {
@@ -88,4 +91,4 @@ const OnRestore: React.FC<OnRestoreProps> = ({ setNodes, setEdges }) => {
   );
 };
 
-export default OnRestore;
+export default RestoreButton;

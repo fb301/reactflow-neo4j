@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { ReactFlowInstance } from "@xyflow/react";
-import { client } from "../gql/client.js";
+import { client } from "../../gql/client.js";
 import { gql } from "@apollo/client";
 
 const SAVE_FLOW = gql`
@@ -9,11 +9,11 @@ const SAVE_FLOW = gql`
   }
 `;
 
-interface OnSaveProps {
+interface SaveButtonProps {
   rfInstance: ReactFlowInstance | null;
 }
 
-const OnSave: React.FC<OnSaveProps> = ({ rfInstance }) => {
+const SaveButton: React.FC<SaveButtonProps> = ({ rfInstance }) => {
   const onSave = useCallback(async () => {
     console.log("OnSave clicked");
     if (rfInstance) {
@@ -29,13 +29,35 @@ const OnSave: React.FC<OnSaveProps> = ({ rfInstance }) => {
             x: node.position.x,
             y: node.position.y,
           })),
-          relationships: flow.edges.map((edge) => ({
-            id: edge.id,
-            source: edge.source,
-            target: edge.target,
-            label: edge.data?.label,
-          })),
+          relationships: flow.edges.map((edge, index) => {
+            console.log(`Edge ${index} raw data:`, {
+              id: edge.id,
+              source: edge.source,
+              target: edge.target,
+              type: edge.type,
+              sourceHandle: edge.sourceHandle,
+              targetHandle: edge.targetHandle,
+              data: edge.data,
+              label: edge.label,
+            });
+
+            const relationship = {
+              id: edge.id,
+              source: edge.source,
+              target: edge.target,
+              label: edge.data?.label || edge.label || "connected",
+            };
+            console.log(
+              `Frontend sending: ${relationship.source} → ${relationship.target} (${relationship.label})`
+            );
+            return relationship;
+          }),
         };
+
+        console.log(
+          "Complete GraphQL data:",
+          JSON.stringify(graphqlData, null, 2)
+        );
 
         await client.mutate({
           mutation: SAVE_FLOW,
@@ -57,4 +79,4 @@ const OnSave: React.FC<OnSaveProps> = ({ rfInstance }) => {
   );
 };
 
-export default OnSave;
+export default SaveButton;

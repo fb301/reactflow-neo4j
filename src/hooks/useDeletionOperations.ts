@@ -65,12 +65,7 @@ export const useDeletionOperations = ({
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: Node) => {
       event.preventDefault();
-      const confirmDelete = window.confirm(
-        `Delete "${node.data.nodeType}" node and all its connections?`
-      );
-      if (confirmDelete) {
-        deleteNode(node.id);
-      }
+      deleteNode(node.id);
     },
     [deleteNode]
   );
@@ -78,11 +73,7 @@ export const useDeletionOperations = ({
   const onEdgeContextMenu = useCallback(
     (event: React.MouseEvent, edge: Edge) => {
       event.preventDefault();
-      const edgeLabel = edge.data?.label || "connection";
-      const confirmDelete = window.confirm(`Delete "${edgeLabel}" connection?`);
-      if (confirmDelete) {
-        deleteEdge(edge.id);
-      }
+      deleteEdge(edge.id);
     },
     [deleteEdge]
   );
