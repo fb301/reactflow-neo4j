@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Background,
   ReactFlow,
@@ -19,6 +19,9 @@ import { client } from "./gql/client.js";
 import OnSave from "./components/OnSave";
 import OnRestore from "./components/OnRestore";
 import DynamicNode from "./components/DynamicNode";
+import DeleteButton from "./components/DeleteButton";
+import { useDeletionOperations } from "./hooks/useDeletionOperations";
+import { useDeleteKeyboard } from "./hooks/useDeleteKeyboard";
 import "@xyflow/react/dist/style.css";
 
 const CustomLabeledEdge = (props: EdgeProps) => {
@@ -31,7 +34,6 @@ const CustomLabeledEdge = (props: EdgeProps) => {
     sourcePosition,
     targetPosition,
     data,
-    markerEnd,
   } = props;
 
   const [edgePath, labelX, labelY] = getBezierPath({
@@ -50,7 +52,6 @@ const CustomLabeledEdge = (props: EdgeProps) => {
         style={{ stroke: "#b1b1b7", strokeWidth: 2 }}
         className="react-flow__edge-path"
         d={edgePath}
-        markerEnd={markerEnd}
       />
       <EdgeText
         x={labelX}
@@ -111,6 +112,7 @@ const initialEdges = [
     data: { label: "ACTED_IN" },
   },
 ];
+
 const SaveRestore = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
@@ -120,7 +122,7 @@ const SaveRestore = () => {
 
   const onConnect = useCallback(
     (params) => {
-      const label = prompt("Enter a label for this connection:", "connected");
+      const label = prompt("Enter a label for this relation:", "connected");
 
       const newEdge = {
         ...params,
@@ -178,6 +180,16 @@ const SaveRestore = () => {
     setNodes((nds) => nds.concat(newNode));
   }, [setNodes]);
 
+  const { deleteSelectedElements, onNodeContextMenu, onEdgeContextMenu } =
+    useDeletionOperations({
+      nodes,
+      edges,
+      setNodes,
+      setEdges,
+    });
+
+  useDeleteKeyboard({ deleteSelectedElements });
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -189,6 +201,9 @@ const SaveRestore = () => {
       onInit={(instance) => setRfInstance(instance as any)}
       onConnect={onConnect}
       onEdgeDoubleClick={onEdgeDoubleClick}
+      onNodeContextMenu={onNodeContextMenu}
+      onEdgeContextMenu={onEdgeContextMenu}
+      deleteKeyCode={["Delete", "Backspace"]}
       fitView
       fitViewOptions={{ padding: 2 }}
     >
@@ -199,7 +214,12 @@ const SaveRestore = () => {
         <button className="xy-theme__button" onClick={onAdd}>
           add node
         </button>
+        <DeleteButton onDelete={deleteSelectedElements} />
       </Panel>
+      <Panel
+        position="bottom-left"
+        style={{ fontSize: "12px", color: "#666" }}
+      ></Panel>
       <MiniMap />
     </ReactFlow>
   );

@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import type { Node, Edge } from "@xyflow/react";
+import { MarkerType } from "@xyflow/react";
 import { client } from "../gql/client.js";
 import { gql } from "@apollo/client";
 
@@ -63,6 +64,12 @@ const OnRestore: React.FC<OnRestoreProps> = ({ setNodes, setEdges }) => {
             target: rel.target,
             type: "custom-labeled",
             data: { label: rel.label || "connects to" },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              width: 20,
+              height: 20,
+              color: "#b1b1b7",
+            },
           })) || [];
 
         setNodes(mappedNodes);

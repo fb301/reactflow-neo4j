@@ -10,8 +10,6 @@ from typing import List, Optional
 def query(q: LiteralString) -> LiteralString:
     return cast(LiteralString, dedent(q).strip())
 
-
-
 @strawberry.type
 class Node:
     id: str
@@ -60,7 +58,7 @@ class Query:
         driver = get_driver()
         try:
             async with driver.session() as session:
-                # Get all nodes with their properties
+                # Nodes
                 nodes_result = await session.run(query("""
                     MATCH (n) 
                     WHERE n.flow_node_id IS NOT NULL
@@ -69,7 +67,7 @@ class Query:
                 """))
                 nodes_data = await nodes_result.data()
                 
-                # Get all relationships
+                # Relationships
                 rels_result = await session.run(query("""
                     MATCH (source)-[r]->(target)
                     WHERE source.flow_node_id IS NOT NULL 
@@ -80,10 +78,8 @@ class Query:
                 """))
                 rels_data = await rels_result.data()
                 
-                # Convert to GraphQL types
                 nodes = []
                 for n in nodes_data:
-                    # Extract attributes (exclude system properties)
                     attrs = {k: v for k, v in n["props"].items() 
                             if k not in ["flow_node_id", "node_type", "x", "y"]}
                     
@@ -121,7 +117,6 @@ class Mutation:
                 # Create nodes
                 if flow_data.nodes:
                     for node in flow_data.nodes:
-                        # Clean the nodeType to make it a valid Neo4j label
                         node_label = "".join(c for c in node.nodeType if c.isalnum() or c == "_")
                         if not node_label or not node_label[0].isalpha():
                             node_label = "Node_" + node_label
@@ -132,11 +127,10 @@ class Mutation:
                             "x": node.x,
                             "y": node.y
                         }
-                        # Add all attributes as properties
+
                         if node.attributes:
                             node_props.update(node.attributes)
                         
-                        # Create each node individually with its specific label
                         print(f"Creating node: label={node_label}, props={node_props}")
                         await session.run(
                             query("CALL apoc.create.nodes([$label], [$props])"),

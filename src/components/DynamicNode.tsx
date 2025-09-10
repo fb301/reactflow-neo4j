@@ -7,31 +7,67 @@ interface DynamicNodeData {
   attributes: Record<string, string>;
 }
 
+interface AttributeEntry {
+  key: string;
+  value: string;
+}
+
 const DynamicNode: React.FC<NodeProps> = ({ data, id }) => {
   const nodeData = data as unknown as DynamicNodeData;
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<DynamicNodeData>(nodeData);
+  const [editAttributes, setEditAttributes] = useState<AttributeEntry[]>([]);
   const { setNodes } = useReactFlow();
 
   // Sync editData with nodeData when it changes
   useEffect(() => {
     setEditData(nodeData);
+    // Convert attributes object to array for stable editing
+    setEditAttributes(
+      Object.entries(nodeData.attributes || {}).map(([key, value]) => ({
+        key,
+        value,
+      }))
+    );
   }, [nodeData]);
 
   const handleSave = useCallback(() => {
+    // Convert editAttributes array back to attributes object
+    const attributesObject = editAttributes.reduce((acc, { key, value }) => {
+      if (key.trim()) {
+        // Only include non-empty keys
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, string>);
+
+    const finalEditData = {
+      ...editData,
+      attributes: attributesObject,
+    };
+
     // Update the node data in ReactFlow
     setNodes((nodes) =>
       nodes.map((node) =>
         node.id === id
-          ? { ...node, data: editData as unknown as Record<string, unknown> }
+          ? {
+              ...node,
+              data: finalEditData as unknown as Record<string, unknown>,
+            }
           : node
       )
     );
     setIsEditing(false);
-  }, [editData, id, setNodes]);
+  }, [editData, editAttributes, id, setNodes]);
 
   const handleCancel = useCallback(() => {
     setEditData(nodeData); // Reset to original data
+    setEditAttributes(
+      Object.entries(nodeData.attributes || {}).map(([key, value]) => ({
+        key,
+        value,
+      }))
+    );
     setIsEditing(false);
   }, [nodeData]);
 
@@ -39,20 +75,12 @@ const DynamicNode: React.FC<NodeProps> = ({ data, id }) => {
     const key = prompt("Attribute name:");
     const value = prompt("Attribute value:");
     if (key && value) {
-      setEditData((prev) => ({
-        ...prev,
-        attributes: { ...prev.attributes, [key]: value },
-      }));
+      setEditAttributes((prev) => [...prev, { key, value }]);
     }
   }, []);
 
-  const removeAttribute = useCallback((key: string) => {
-    setEditData((prev) => ({
-      ...prev,
-      attributes: Object.fromEntries(
-        Object.entries(prev.attributes).filter(([k]) => k !== key)
-      ),
-    }));
+  const removeAttribute = useCallback((index: number) => {
+    setEditAttributes((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   if (isEditing) {
@@ -75,17 +103,18 @@ const DynamicNode: React.FC<NodeProps> = ({ data, id }) => {
 
           <div className="attributes-section">
             <label>Attributes:</label>
-            {Object.entries(editData.attributes).map(([key, value]) => (
-              <div key={key} className="attribute-row">
+            {editAttributes.map(({ key, value }, index) => (
+              <div key={`attr-${index}`} className="attribute-row">
                 <input
                   type="text"
                   value={key}
                   onChange={(e) => {
                     const newKey = e.target.value;
-                    const newAttrs = { ...editData.attributes };
-                    delete newAttrs[key];
-                    newAttrs[newKey] = value;
-                    setEditData((prev) => ({ ...prev, attributes: newAttrs }));
+                    setEditAttributes((prev) =>
+                      prev.map((attr, i) =>
+                        i === index ? { ...attr, key: newKey } : attr
+                      )
+                    );
                   }}
                   placeholder="Attribute name"
                 />
@@ -93,14 +122,16 @@ const DynamicNode: React.FC<NodeProps> = ({ data, id }) => {
                   type="text"
                   value={value}
                   onChange={(e) => {
-                    setEditData((prev) => ({
-                      ...prev,
-                      attributes: { ...prev.attributes, [key]: e.target.value },
-                    }));
+                    const newValue = e.target.value;
+                    setEditAttributes((prev) =>
+                      prev.map((attr, i) =>
+                        i === index ? { ...attr, value: newValue } : attr
+                      )
+                    );
                   }}
                   placeholder="Value"
                 />
-                <button onClick={() => removeAttribute(key)}>×</button>
+                <button onClick={() => removeAttribute(index)}>×</button>
               </div>
             ))}
             <button onClick={addAttribute} className="add-attribute">
