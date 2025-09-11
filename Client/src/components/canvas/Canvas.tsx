@@ -46,7 +46,6 @@ const Canvas: React.FC<CanvasProps> = ({
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
 
-  // Hooks
   const { createNode } = useNodeCreator({ setNodes, showPrompt });
   const { onConnect, onEdgeDoubleClick } = useEdgeOperations({
     setEdges,
