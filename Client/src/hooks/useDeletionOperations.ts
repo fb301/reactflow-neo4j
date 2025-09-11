@@ -6,6 +6,10 @@ interface UseDeletionOperationsProps {
   edges: Edge[];
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
+  showPrompt: (options: {
+    title: string;
+    defaultValue?: string;
+  }) => Promise<string | null>;
 }
 
 export const useDeletionOperations = ({
@@ -13,17 +17,19 @@ export const useDeletionOperations = ({
   edges,
   setNodes,
   setEdges,
+  showPrompt,
 }: UseDeletionOperationsProps) => {
-  const deleteSelectedElements = useCallback(() => {
+  const deleteSelectedElements = useCallback(async () => {
     const selectedNodes = nodes.filter((node) => node.selected);
     const selectedEdges = edges.filter((edge) => edge.selected);
 
     if (selectedNodes.length > 0 || selectedEdges.length > 0) {
-      const confirmDelete = window.confirm(
-        `Delete ${selectedNodes.length} node(s) and ${selectedEdges.length} edge(s)?`
-      );
+      const confirmDelete = await showPrompt({
+        title: `Delete ${selectedNodes.length} node(s) and ${selectedEdges.length} edge(s)? Type "yes" to confirm:`,
+        defaultValue: "",
+      });
 
-      if (confirmDelete) {
+      if (confirmDelete === "yes") {
         // Delete selected nodes (this will also delete connected edges automatically)
         if (selectedNodes.length > 0) {
           setNodes((nds) => nds.filter((node) => !node.selected));
@@ -35,31 +41,36 @@ export const useDeletionOperations = ({
         }
       }
     }
-  }, [nodes, edges, setNodes, setEdges]);
+  }, [nodes, edges, setNodes, setEdges, showPrompt]);
 
   const deleteNode = useCallback(
-    (nodeId: string) => {
-      const confirmDelete = window.confirm(
-        "Delete this node and all its connections?"
-      );
-      if (confirmDelete) {
+    async (nodeId: string) => {
+      const confirmDelete = await showPrompt({
+        title:
+          'Delete this node and all its connections? Type "yes" to confirm:',
+        defaultValue: "",
+      });
+      if (confirmDelete === "yes") {
         setNodes((nds) => nds.filter((node) => node.id !== nodeId));
         setEdges((eds) =>
           eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
         );
       }
     },
-    [setNodes, setEdges]
+    [setNodes, setEdges, showPrompt]
   );
 
   const deleteEdge = useCallback(
-    (edgeId: string) => {
-      const confirmDelete = window.confirm("Delete this connection?");
-      if (confirmDelete) {
+    async (edgeId: string) => {
+      const confirmDelete = await showPrompt({
+        title: 'Delete this connection? Type "yes" to confirm:',
+        defaultValue: "",
+      });
+      if (confirmDelete === "yes") {
         setEdges((eds) => eds.filter((edge) => edge.id !== edgeId));
       }
     },
-    [setEdges]
+    [setEdges, showPrompt]
   );
 
   const onNodeContextMenu = useCallback(

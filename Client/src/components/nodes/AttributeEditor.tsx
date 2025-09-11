@@ -4,14 +4,15 @@ import { AttributeEntry, AttributeEditorProps } from "./types";
 const AttributeEditor: React.FC<AttributeEditorProps> = ({
   attributes,
   onAttributesChange,
+  showPrompt,
 }) => {
-  const addAttribute = useCallback(() => {
-    const key = prompt("Attribute name:");
-    const value = prompt("Attribute value:");
+  const addAttribute = useCallback(async () => {
+    const key = await showPrompt({ title: "Attribute name:" });
+    const value = await showPrompt({ title: "Attribute value:" });
     if (key && value) {
       onAttributesChange([...attributes, { key, value }]);
     }
-  }, [attributes, onAttributesChange]);
+  }, [attributes, onAttributesChange, showPrompt]);
 
   const removeAttribute = useCallback(
     (index: number) => {

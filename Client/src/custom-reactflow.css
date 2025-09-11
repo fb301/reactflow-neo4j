@@ -1,0 +1,284 @@
+@import "@xyflow/react/dist/style.css";
+
+:root {
+  --bg-dark: #111113;
+  --bg-medium: #18191b;
+  --bg-light: #212225;
+  --border: #363a3f;
+  --border-white: #cccccc;
+  --text: #edeef0;
+  --text-muted: #b0b4ba;
+
+  --teal-primary: #12a594;
+  --teal-light: #58d6c7;
+  --teal-dark: #084843;
+
+  --jade-primary: #29a383;
+  --jade-light: #b8f7e6;
+
+  --red: #e5484d;
+  --green: #30a46c;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.react-flow__background {
+  background: var(--bg-dark) !important;
+}
+
+.react-flow__controls {
+  background: var(--bg-medium) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+}
+
+.react-flow__controls button {
+  background: var(--bg-medium) !important;
+  border: none !important;
+  color: var(--text-muted) !important;
+}
+
+/* Nodes */
+.react-flow__node {
+  background: var(--bg-medium);
+  border: 2px solid var(--teal-primary);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.react-flow__node.selected {
+  border-color: var(--teal-light);
+  box-shadow: 0 0 0 3px var(--teal-primary), 0 0 20px rgba(18, 165, 148, 0.6);
+  transform: scale(1.05);
+  background: linear-gradient(
+    135deg,
+    var(--bg-medium) 0%,
+    var(--bg-light) 100%
+  );
+}
+
+/* Dynamic Node Content */
+.dynamic-node {
+  background: var(--bg-medium);
+  border: 1px solid var(--teal-primary);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 160px;
+  color: var(--text);
+}
+
+.react-flow__node.selected .dynamic-node {
+  border-color: var(--teal-light);
+  box-shadow: 0 0 0 2px var(--teal-primary), 0 0 15px rgba(18, 165, 148, 0.5);
+  background: linear-gradient(
+    135deg,
+    var(--bg-light) 0%,
+    var(--bg-medium) 100%
+  );
+}
+
+/* Node Type Label */
+.node-type-label,
+.node-type {
+  font-weight: 600;
+  color: var(--teal-light);
+  margin-bottom: 8px;
+  font-family: "Segoe UI", "Inter", "SF Pro Text", -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Attributes */
+.attribute-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  align-items: center;
+}
+
+.attribute {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: "Segoe UI", "Inter", "SF Pro Text", -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--teal-primary);
+}
+
+/* Buttons */
+button {
+  background: var(--teal-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: "Segoe UI", "Inter", "SF Pro Text", -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Button Variants */
+.add-attribute {
+  background: var(--jade-primary);
+  width: 100%;
+  margin-top: 8px;
+}
+
+.attribute-row button {
+  background: var(--red);
+  min-width: 24px;
+  min-height: 24px;
+  padding: 4px;
+}
+
+/* Handles */
+.react-flow__handle {
+  background: var(--teal-primary);
+  border: 1.5px solid var(--border-white);
+  width: 10px;
+  height: 10px;
+}
+
+.react-flow__handle-connecting {
+  background: var(--jade-primary) !important;
+}
+
+/* Edges */
+.react-flow__edge-path {
+  stroke: var(--teal-primary);
+  stroke-width: 2px;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--teal-light);
+  stroke-width: 3px;
+}
+
+.react-flow__edge-text {
+  fill: var(--teal-light);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.react-flow__edge-textbg {
+  fill: var(--bg-medium);
+  stroke: var(--teal-primary);
+}
+
+/* Minimap */
+.react-flow__minimap {
+  background: var(--bg-medium) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.react-flow__minimap-node {
+  fill: var(--teal-primary) !important;
+}
+
+/* Panels */
+.react-flow__panel {
+  background: var(--bg-medium);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+/* Panel Buttons */
+.panel-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Node Actions */
+.node-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.node-actions button {
+  flex: 1;
+  padding: 8px;
+}
+
+/* Prompt Modal */
+.prompt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.prompt-dialog {
+  background: var(--bg-medium);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.prompt-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-family: "Segoe UI", "Inter", "SF Pro Text", -apple-system,
+    BlinkMacSystemFont, sans-serif;
+}
+
+.prompt-input {
+  width: 90%;
+  margin-bottom: 16px;
+}
+
+.prompt-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.prompt-cancel {
+  background: var(--bg-light) !important;
+  color: var(--text-muted) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.prompt-confirm {
+  background: var(--teal-primary) !important;
+}

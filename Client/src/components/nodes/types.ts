@@ -12,6 +12,10 @@ export interface NodeEditorProps {
   nodeData: NodeData;
   onSave: (data: NodeData) => void;
   onCancel: () => void;
+  showPrompt: (options: {
+    title: string;
+    defaultValue?: string;
+  }) => Promise<string | null>;
 }
 
 export interface NodeViewerProps {
@@ -22,6 +26,10 @@ export interface NodeViewerProps {
 export interface AttributeEditorProps {
   attributes: AttributeEntry[];
   onAttributesChange: (attributes: AttributeEntry[]) => void;
+  showPrompt: (options: {
+    title: string;
+    defaultValue?: string;
+  }) => Promise<string | null>;
 }
 
 export interface NodeHandlesProps {}

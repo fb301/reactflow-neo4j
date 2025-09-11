@@ -2,24 +2,35 @@ import React from "react";
 import { NodeProps } from "@xyflow/react";
 import NodeEditor from "./NodeEditor";
 import NodeViewer from "./NodeViewer";
+import NodeHandles from "./NodeHandles";
 import { useNodeEditor } from "./useNodeEditor";
 import { NodeData } from "./types";
-import "./DynamicNode.css";
+import { usePrompt } from "../../contexts/PromptContext";
 
 const CustomNode: React.FC<NodeProps> = ({ data, id }) => {
   const nodeData = data as unknown as NodeData;
+  const { showPrompt } = usePrompt();
   const { isEditing, startEditing, saveNode, cancelEdit } = useNodeEditor(
     nodeData,
     id
   );
 
-  if (isEditing) {
-    return (
-      <NodeEditor nodeData={nodeData} onSave={saveNode} onCancel={cancelEdit} />
-    );
-  }
+  return (
+    <>
+      <NodeHandles />
 
-  return <NodeViewer nodeData={nodeData} onEdit={startEditing} />;
+      {isEditing ? (
+        <NodeEditor
+          nodeData={nodeData}
+          onSave={saveNode}
+          onCancel={cancelEdit}
+          showPrompt={showPrompt}
+        />
+      ) : (
+        <NodeViewer nodeData={nodeData} onEdit={startEditing} />
+      )}
+    </>
+  );
 };
 
 export default CustomNode;

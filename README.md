@@ -8,12 +8,13 @@ This is solely made for experiment and development purposes as an starting point
 
 ```
 ReactFlow-Neo4j/
-├── Client/              # Frontend React application
+├── Client/             # Frontend React application
 │   ├── src/            # React source code with modular components
 │   ├── public/         # Static assets
 │   ├── package.json    # Frontend dependencies
 │   └── ...config files # Vite, TypeScript, ESLint configurations
-├── Server/              # Backend API server
+├── Server/             # Backend API server
+│   ├── database/       # Neo4j connection and settings
 │   ├── gql/            # GraphQL schemas and resolvers
 │   ├── main.py         # Main FastAPI application
 │   └── pyproject.toml  # Backend dependencies
@@ -51,7 +52,7 @@ uv run fastapi dev main.py
 Create a `.env` file in the root directory with your Neo4j connection details:
 
 ```
-NEO4J_URI=bolt://localhost:7687
+NEO4J_URI=neo4j://127.0.0.1:7687
 NEO4J_USER=neo4j
 NEO4J_PASSWORD=your_password
 NEO4J_VERSION=your_version

@@ -3,14 +3,25 @@ import { getNodeId } from "../data/idGenerator";
 
 interface UseNodeCreatorProps {
   setNodes: (updater: (nodes: any[]) => any[]) => void;
+  showPrompt: (options: {
+    title: string;
+    defaultValue?: string;
+  }) => Promise<string | null>;
 }
 
-export const useNodeCreator = ({ setNodes }: UseNodeCreatorProps) => {
-  const createNode = useCallback(() => {
+export const useNodeCreator = ({
+  setNodes,
+  showPrompt,
+}: UseNodeCreatorProps) => {
+  const createNode = useCallback(async () => {
     const nodeType =
-      prompt("Node type (e.g., Actor, Movie, Director):") || "Node";
-    const attributeName = prompt("First attribute name:") || "Name";
-    const attributeValue = prompt("First attribute value:") || "New Value";
+      (await showPrompt({
+        title: "Node type (e.g., Actor, Movie, Director):",
+      })) || "Node";
+    const attributeName =
+      (await showPrompt({ title: "First attribute name:" })) || "Name";
+    const attributeValue =
+      (await showPrompt({ title: "First attribute value:" })) || "New Value";
 
     const newNode = {
       id: getNodeId(),
@@ -26,7 +37,7 @@ export const useNodeCreator = ({ setNodes }: UseNodeCreatorProps) => {
     };
 
     setNodes((nds) => nds.concat(newNode));
-  }, [setNodes]);
+  }, [setNodes, showPrompt]);
 
   return { createNode };
 };

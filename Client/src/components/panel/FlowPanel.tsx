@@ -22,10 +22,12 @@ const FlowPanel: React.FC<FlowPanelProps> = ({
 }) => {
   return (
     <Panel position="top-right">
-      <SaveButton rfInstance={rfInstance} />
-      <RestoreButton setNodes={setNodes} setEdges={setEdges} />
-      <AddNodeButton onAddNode={onAddNode} />
-      <DeleteButton onDelete={onDelete} />
+      <div className="panel-buttons">
+        <SaveButton rfInstance={rfInstance} />
+        <RestoreButton setNodes={setNodes} setEdges={setEdges} />
+        <AddNodeButton onAddNode={onAddNode} />
+        <DeleteButton onDelete={onDelete} />
+      </div>
     </Panel>
   );
 };

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import NodeHandles from "./NodeHandles";
 import NodeTypeEditor from "./NodeTypeEditor";
 import AttributeEditor from "./AttributeEditor";
 import { NodeEditorProps, AttributeEntry } from "./types";
@@ -8,6 +7,7 @@ const NodeEditor: React.FC<NodeEditorProps> = ({
   nodeData,
   onSave,
   onCancel,
+  showPrompt,
 }) => {
   const [editNodeType, setEditNodeType] = useState(nodeData.nodeType);
   const [editAttributes, setEditAttributes] = useState<AttributeEntry[]>([]);
@@ -49,8 +49,6 @@ const NodeEditor: React.FC<NodeEditorProps> = ({
 
   return (
     <div className="dynamic-node editing">
-      <NodeHandles />
-
       <div className="node-editor">
         <NodeTypeEditor
           nodeType={editNodeType}
@@ -60,6 +58,7 @@ const NodeEditor: React.FC<NodeEditorProps> = ({
         <AttributeEditor
           attributes={editAttributes}
           onAttributesChange={setEditAttributes}
+          showPrompt={showPrompt}
         />
 
         <div className="node-actions">

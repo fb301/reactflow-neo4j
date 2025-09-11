@@ -4,11 +4,18 @@ import { getNodeId } from "../data/idGenerator";
 
 interface UseEdgeOperationsProps {
   setEdges: (updater: (edges: any[]) => any[]) => void;
+  showPrompt: (options: {
+    title: string;
+    defaultValue?: string;
+  }) => Promise<string | null>;
 }
 
-export const useEdgeOperations = ({ setEdges }: UseEdgeOperationsProps) => {
+export const useEdgeOperations = ({
+  setEdges,
+  showPrompt,
+}: UseEdgeOperationsProps) => {
   const onConnect = useCallback(
-    (params: any) => {
+    async (params: any) => {
       // Debug: Log all connection parameters from ReactFlow
       console.log("ReactFlow onConnect params:", {
         source: params.source,
@@ -23,7 +30,11 @@ export const useEdgeOperations = ({ setEdges }: UseEdgeOperationsProps) => {
         targetPosition: params.targetPosition,
       });
 
-      const label = prompt("Enter a label for this relation:", "connected");
+      const label =
+        (await showPrompt({
+          title: "Enter a label for this relation:",
+          defaultValue: "connected",
+        })) || "connected";
 
       const newEdge = {
         ...params,
@@ -42,14 +53,17 @@ export const useEdgeOperations = ({ setEdges }: UseEdgeOperationsProps) => {
 
       setEdges((eds) => addEdge(newEdge, eds));
     },
-    [setEdges]
+    [setEdges, showPrompt]
   );
 
   const onEdgeDoubleClick = useCallback(
-    (event: any, edge: any) => {
+    async (event: any, edge: any) => {
       event.stopPropagation();
       const currentEdgeLabel = edge.data?.label || edge.label || "";
-      const newLabel = prompt("Edit edge label:", currentEdgeLabel);
+      const newLabel = await showPrompt({
+        title: "Edit edge label:",
+        defaultValue: currentEdgeLabel,
+      });
 
       if (newLabel !== null) {
         setEdges((edges) =>
@@ -65,7 +79,7 @@ export const useEdgeOperations = ({ setEdges }: UseEdgeOperationsProps) => {
         );
       }
     },
-    [setEdges]
+    [setEdges, showPrompt]
   );
 
   return {

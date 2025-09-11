@@ -10,11 +10,10 @@ interface DeleteButtonProps {
 const DeleteButton: React.FC<DeleteButtonProps> = ({
   onDelete,
   className = "xy-theme__button",
-  style = { backgroundColor: "#fafafaff", borderColor: "#ff5252" },
   children = "delete selected",
 }) => {
   return (
-    <button className={className} onClick={onDelete} style={style}>
+    <button className={className} onClick={onDelete}>
       {children}
     </button>
   );

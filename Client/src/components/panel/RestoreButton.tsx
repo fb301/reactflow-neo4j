@@ -60,20 +60,62 @@ const RestoreButton: React.FC<RestoreButtonProps> = ({
             position: { x: node.x, y: node.y },
           })) || [];
 
+        // Handle distribution logic
+        const sourceHandles = [
+          "top-source",
+          "right-source",
+          "bottom-source",
+          "left-source",
+        ];
+        const targetHandles = [
+          "top-target",
+          "right-target",
+          "bottom-target",
+          "left-target",
+        ];
+
+        // Track handle usage for each node
+        const nodeSourceHandleIndex: Record<string, number> = {};
+        const nodeTargetHandleIndex: Record<string, number> = {};
+
         const mappedEdges: Edge[] =
-          data.relationships?.map((rel) => ({
-            id: rel.id,
-            source: rel.source,
-            target: rel.target,
-            type: "custom-labeled",
-            data: { label: rel.label || "connects to" },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              width: 20,
-              height: 20,
-              color: "#b1b1b7",
-            },
-          })) || [];
+          data.relationships?.map((rel) => {
+            // Get next available source handle for source node
+            if (!(rel.source in nodeSourceHandleIndex)) {
+              nodeSourceHandleIndex[rel.source] = 0;
+            }
+            const sourceHandle =
+              sourceHandles[
+                nodeSourceHandleIndex[rel.source] % sourceHandles.length
+              ];
+            nodeSourceHandleIndex[rel.source]++;
+
+            // Get next available target handle for target node
+            if (!(rel.target in nodeTargetHandleIndex)) {
+              nodeTargetHandleIndex[rel.target] = 0;
+            }
+            const targetHandle =
+              targetHandles[
+                nodeTargetHandleIndex[rel.target] % targetHandles.length
+              ];
+            nodeTargetHandleIndex[rel.target]++;
+
+            return {
+              id: rel.id,
+              source: rel.source,
+              target: rel.target,
+              sourceHandle: sourceHandle,
+              targetHandle: targetHandle,
+              type: "custom-labeled",
+              data: { label: rel.label || "connects to" },
+              markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: "#b1b1b7",
+              },
+            };
+          }) || [];
 
         setNodes(mappedNodes);
         setEdges(mappedEdges);
