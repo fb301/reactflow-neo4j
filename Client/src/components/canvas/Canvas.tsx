@@ -12,22 +12,14 @@ import {
   Panel,
 } from "@xyflow/react";
 import { CustomNode } from "../nodes";
-import CustomLabeledEdge from "../edges/CustomLabeledEdge";
-import FlowPanel from "../panel/FlowPanel";
+import { CustomLabeledEdge } from "../edges/CustomLabeledEdge";
+import { FlowPanel } from "../panel";
 import { useDeletionOperations } from "../../hooks/useDeletionOperations";
-import { useDeleteKeyboard } from "../../hooks/useDeleteKeyboard";
+import { useDeleteKeyboard } from "./hooks/useDeleteKeyboard";
 import { useNodeCreator } from "../../hooks/useNodeCreator";
 import { useEdgeOperations } from "../../hooks/useEdgeOperations";
-import { PromptProvider } from "../../contexts/PromptContext";
-
-interface CanvasProps {
-  initialNodes: Node[];
-  initialEdges: Edge[];
-  showPrompt: (options: {
-    title: string;
-    defaultValue?: string;
-  }) => Promise<string | null>;
-}
+import { PromptProvider } from "../ui";
+import { CanvasProps } from "./types";
 
 const nodeTypes = {
   dynamic: CustomNode,
@@ -37,7 +29,7 @@ const edgeTypes = {
   "custom-labeled": CustomLabeledEdge,
 };
 
-const Canvas: React.FC<CanvasProps> = ({
+export const Canvas: React.FC<CanvasProps> = ({
   initialNodes,
   initialEdges,
   showPrompt,
@@ -97,5 +89,3 @@ const Canvas: React.FC<CanvasProps> = ({
     </PromptProvider>
   );
 };
-
-export default Canvas;

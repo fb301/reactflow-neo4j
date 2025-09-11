@@ -1,19 +1,9 @@
 import React from "react";
-import { Panel, ReactFlowInstance } from "@xyflow/react";
-import SaveButton from "./SaveButton";
-import RestoreButton from "./RestoreButton";
-import DeleteButton from "./DeleteButton";
-import AddNodeButton from "./AddNodeButton";
+import { Panel } from "@xyflow/react";
+import { AddNodeButton, SaveButton, RestoreButton, DeleteButton } from ".";
+import { FlowPanelProps } from "./types";
 
-interface FlowPanelProps {
-  rfInstance: ReactFlowInstance | null;
-  setNodes: any;
-  setEdges: any;
-  onAddNode: () => void;
-  onDelete: () => void;
-}
-
-const FlowPanel: React.FC<FlowPanelProps> = ({
+export const FlowPanel: React.FC<FlowPanelProps> = ({
   rfInstance,
   setNodes,
   setEdges,
@@ -31,5 +21,3 @@ const FlowPanel: React.FC<FlowPanelProps> = ({
     </Panel>
   );
 };
-
-export default FlowPanel;

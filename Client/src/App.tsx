@@ -1,11 +1,9 @@
-import React from "react";
 import { ReactFlowProvider } from "@xyflow/react";
 import { ApolloProvider } from "@apollo/client/react";
 import { client } from "./gql/client.js";
-import Canvas from "./components/canvas/Canvas";
+import { Canvas } from "./components/canvas";
 import { initialNodes, initialEdges } from "./data/initialFlowData";
-import Prompt from "./components/ui/Prompt.tsx";
-import { usePrompt } from "./hooks/usePrompt.ts";
+import { Prompt, usePrompt } from "./components/ui/";
 
 import "./custom-reactflow.css";
 

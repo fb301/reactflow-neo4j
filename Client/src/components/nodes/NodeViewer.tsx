@@ -1,7 +1,7 @@
 import React from "react";
 import { NodeViewerProps } from "./types";
 
-const NodeViewer: React.FC<NodeViewerProps> = ({ nodeData, onEdit }) => {
+export const NodeViewer: React.FC<NodeViewerProps> = ({ nodeData, onEdit }) => {
   return (
     <div className="dynamic-node" onDoubleClick={onEdit}>
       <div className="node-content">
@@ -18,5 +18,3 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ nodeData, onEdit }) => {
     </div>
   );
 };
-
-export default NodeViewer;

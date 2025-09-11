@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
-import { ReactFlowInstance } from "@xyflow/react";
-import { client } from "../../gql/client.js";
+import { client } from "../../../gql/client.js";
 import { gql } from "@apollo/client";
+import { SaveButtonProps } from "../types.js";
 
 const SAVE_FLOW = gql`
   mutation SaveFlow($flowData: FlowDataInput!) {
@@ -9,11 +9,7 @@ const SAVE_FLOW = gql`
   }
 `;
 
-interface SaveButtonProps {
-  rfInstance: ReactFlowInstance | null;
-}
-
-const SaveButton: React.FC<SaveButtonProps> = ({ rfInstance }) => {
+export const SaveButton: React.FC<SaveButtonProps> = ({ rfInstance }) => {
   const onSave = useCallback(async () => {
     console.log("OnSave clicked");
     if (rfInstance) {
@@ -78,5 +74,3 @@ const SaveButton: React.FC<SaveButtonProps> = ({ rfInstance }) => {
     </button>
   );
 };
-
-export default SaveButton;

@@ -10,7 +10,6 @@ export const useDeleteKeyboard = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Delete" || event.key === "Backspace") {
-        // Only delete if we're not typing in an input field
         if (
           event.target instanceof HTMLElement &&
           event.target.tagName !== "INPUT" &&

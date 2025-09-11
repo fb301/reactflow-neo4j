@@ -1,7 +1,7 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
 
-const NodeHandles: React.FC = () => {
+export const NodeHandles: React.FC = () => {
   return (
     <>
       {/* Top */}
@@ -22,5 +22,3 @@ const NodeHandles: React.FC = () => {
     </>
   );
 };
-
-export default NodeHandles;

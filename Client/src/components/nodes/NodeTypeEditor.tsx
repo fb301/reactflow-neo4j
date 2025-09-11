@@ -1,7 +1,7 @@
 import React from "react";
 import { NodeTypeEditorProps } from "./types";
 
-const NodeTypeEditor: React.FC<NodeTypeEditorProps> = ({
+export const NodeTypeEditor: React.FC<NodeTypeEditorProps> = ({
   nodeType,
   onNodeTypeChange,
 }) => {
@@ -17,5 +17,3 @@ const NodeTypeEditor: React.FC<NodeTypeEditorProps> = ({
     </div>
   );
 };
-
-export default NodeTypeEditor;

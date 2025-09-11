@@ -1,12 +1,7 @@
 import React from "react";
+import { AddNodeButtonProps } from "../types";
 
-interface AddNodeButtonProps {
-  onAddNode: () => void;
-  className?: string;
-  children?: React.ReactNode;
-}
-
-const AddNodeButton: React.FC<AddNodeButtonProps> = ({
+export const AddNodeButton: React.FC<AddNodeButtonProps> = ({
   onAddNode,
   className = "xy-theme__button",
   children = "add node",
@@ -17,5 +12,3 @@ const AddNodeButton: React.FC<AddNodeButtonProps> = ({
     </button>
   );
 };
-
-export default AddNodeButton;

@@ -1,13 +1,13 @@
 import React from "react";
 import { NodeProps } from "@xyflow/react";
-import NodeEditor from "./NodeEditor";
-import NodeViewer from "./NodeViewer";
-import NodeHandles from "./NodeHandles";
-import { useNodeEditor } from "./useNodeEditor";
+import { NodeEditor } from "./NodeEditor";
+import { NodeViewer } from "./NodeViewer";
+import { NodeHandles } from "./NodeHandles";
+import { useNodeEditor } from "./hooks/useNodeEditor";
 import { NodeData } from "./types";
-import { usePrompt } from "../../contexts/PromptContext";
+import { usePrompt } from "../ui/contexts/PromptContext";
 
-const CustomNode: React.FC<NodeProps> = ({ data, id }) => {
+export const CustomNode: React.FC<NodeProps> = ({ data, id }) => {
   const nodeData = data as unknown as NodeData;
   const { showPrompt } = usePrompt();
   const { isEditing, startEditing, saveNode, cancelEdit } = useNodeEditor(
@@ -32,5 +32,3 @@ const CustomNode: React.FC<NodeProps> = ({ data, id }) => {
     </>
   );
 };
-
-export default CustomNode;

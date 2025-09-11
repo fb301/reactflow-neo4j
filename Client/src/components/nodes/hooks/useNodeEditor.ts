@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { useReactFlow, useUpdateNodeInternals } from "@xyflow/react";
-import { NodeData } from "./types";
+import { NodeData } from "../types";
 
 export const useNodeEditor = (initialData: NodeData, nodeId: string) => {
   const [isEditing, setIsEditing] = useState(false);

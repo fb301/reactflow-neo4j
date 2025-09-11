@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { PromptProps } from "./types";
 
-interface PromptProps {
-  isOpen: boolean;
-  title: string;
-  defaultValue?: string;
-  onConfirm: (value: string) => void;
-  onCancel: () => void;
-}
-
-const Prompt: React.FC<PromptProps> = ({
+export const Prompt: React.FC<PromptProps> = ({
   isOpen,
   title,
   defaultValue = "",
@@ -64,5 +57,3 @@ const Prompt: React.FC<PromptProps> = ({
     </div>
   );
 };
-
-export default Prompt;

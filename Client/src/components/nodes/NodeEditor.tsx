@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import NodeTypeEditor from "./NodeTypeEditor";
-import AttributeEditor from "./AttributeEditor";
+import { NodeTypeEditor } from "./NodeTypeEditor";
+import { AttributeEditor } from "./AttributeEditor";
 import { NodeEditorProps, AttributeEntry } from "./types";
 
-const NodeEditor: React.FC<NodeEditorProps> = ({
+export const NodeEditor: React.FC<NodeEditorProps> = ({
   nodeData,
   onSave,
   onCancel,
@@ -69,5 +69,3 @@ const NodeEditor: React.FC<NodeEditorProps> = ({
     </div>
   );
 };
-
-export default NodeEditor;

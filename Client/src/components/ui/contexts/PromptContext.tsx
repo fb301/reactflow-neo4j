@@ -7,7 +7,7 @@ interface PromptContextType {
   }) => Promise<string | null>;
 }
 
-const PromptContext = createContext<PromptContextType | null>(null);
+export const PromptContext = createContext<PromptContextType | null>(null);
 
 export const PromptProvider: React.FC<{
   children: React.ReactNode;

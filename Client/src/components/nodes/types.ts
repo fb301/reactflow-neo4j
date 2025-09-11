@@ -32,8 +32,6 @@ export interface AttributeEditorProps {
   }) => Promise<string | null>;
 }
 
-export interface NodeHandlesProps {}
-
 export interface NodeTypeEditorProps {
   nodeType: string;
   onNodeTypeChange: (nodeType: string) => void;

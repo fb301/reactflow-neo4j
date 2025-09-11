@@ -1,10 +1,8 @@
-export { default as CustomNode } from "./CustomNode";
-export { default as NodeEditor } from "./NodeEditor";
-export { default as NodeViewer } from "./NodeViewer";
-export { default as NodeHandles } from "./NodeHandles";
-export { default as AttributeEditor } from "./AttributeEditor";
-export { default as NodeTypeEditor } from "./NodeTypeEditor";
-export { useNodeEditor } from "./useNodeEditor";
+export { CustomNode } from "./CustomNode";
+export { NodeEditor } from "./NodeEditor";
+export { NodeViewer } from "./NodeViewer";
+export { NodeHandles } from "./NodeHandles";
+export { AttributeEditor } from "./AttributeEditor";
+export { NodeTypeEditor } from "./NodeTypeEditor";
+export { useNodeEditor } from "./hooks/useNodeEditor";
 export * from "./types";
-
-export { default as DynamicNode } from "./CustomNode";

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { AttributeEntry, AttributeEditorProps } from "./types";
 
-const AttributeEditor: React.FC<AttributeEditorProps> = ({
+export const AttributeEditor: React.FC<AttributeEditorProps> = ({
   attributes,
   onAttributesChange,
   showPrompt,
@@ -58,5 +58,3 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
     </div>
   );
 };
-
-export default AttributeEditor;

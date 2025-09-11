@@ -1,7 +1,6 @@
-import React from "react";
 import { EdgeText, getBezierPath, type EdgeProps } from "@xyflow/react";
 
-const CustomLabeledEdge = (props: EdgeProps) => {
+export const CustomLabeledEdge = (props: EdgeProps) => {
   const {
     id,
     sourceX,
@@ -58,5 +57,3 @@ const CustomLabeledEdge = (props: EdgeProps) => {
     </>
   );
 };
-
-export default CustomLabeledEdge;

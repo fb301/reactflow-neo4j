@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
 import type { Node, Edge } from "@xyflow/react";
 import { MarkerType } from "@xyflow/react";
-import { client } from "../../gql/client.js";
+import { client } from "../../../gql/client.js";
 import { gql } from "@apollo/client";
+import { RestoreButtonProps } from "../types.ts";
 
 const RESTORE_FLOW = gql`
   query RestoreFlow {
@@ -24,12 +25,7 @@ const RESTORE_FLOW = gql`
   }
 `;
 
-interface RestoreButtonProps {
-  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
-  setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
-}
-
-const RestoreButton: React.FC<RestoreButtonProps> = ({
+export const RestoreButton: React.FC<RestoreButtonProps> = ({
   setNodes,
   setEdges,
 }) => {
@@ -60,7 +56,6 @@ const RestoreButton: React.FC<RestoreButtonProps> = ({
             position: { x: node.x, y: node.y },
           })) || [];
 
-        // Handle distribution logic
         const sourceHandles = [
           "top-source",
           "right-source",
@@ -74,13 +69,11 @@ const RestoreButton: React.FC<RestoreButtonProps> = ({
           "left-target",
         ];
 
-        // Track handle usage for each node
         const nodeSourceHandleIndex: Record<string, number> = {};
         const nodeTargetHandleIndex: Record<string, number> = {};
 
         const mappedEdges: Edge[] =
           data.relationships?.map((rel) => {
-            // Get next available source handle for source node
             if (!(rel.source in nodeSourceHandleIndex)) {
               nodeSourceHandleIndex[rel.source] = 0;
             }
@@ -90,7 +83,6 @@ const RestoreButton: React.FC<RestoreButtonProps> = ({
               ];
             nodeSourceHandleIndex[rel.source]++;
 
-            // Get next available target handle for target node
             if (!(rel.target in nodeTargetHandleIndex)) {
               nodeTargetHandleIndex[rel.target] = 0;
             }
@@ -132,5 +124,3 @@ const RestoreButton: React.FC<RestoreButtonProps> = ({
     </button>
   );
 };
-
-export default RestoreButton;
