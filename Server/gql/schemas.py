@@ -2,7 +2,7 @@ import strawberry
 from typing import List, Optional
 
 
-# Output Types (for queries)
+# Output
 @strawberry.type
 class Node:
     id: str
@@ -26,7 +26,7 @@ class FlowData:
     relationships: List[Relationship]
 
 
-# Input Types (for mutations)
+# Input
 @strawberry.input
 class NodeInput:
     id: str

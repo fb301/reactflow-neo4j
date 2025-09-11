@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { addEdge } from "@xyflow/react";
+import { getNodeId } from "../data/idGenerator";
 
 interface UseEdgeOperationsProps {
   setEdges: (updater: (edges: any[]) => any[]) => void;
@@ -26,7 +27,7 @@ export const useEdgeOperations = ({ setEdges }: UseEdgeOperationsProps) => {
 
       const newEdge = {
         ...params,
-        id: `edge-${params.source}-${params.target}`,
+        id: `edge-${params.source}-${params.target}-${getNodeId()}`,
         type: "custom-labeled",
         markerEnd: {
           type: "arrowclosed",
